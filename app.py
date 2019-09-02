@@ -74,6 +74,8 @@ def register():
         #Following will commit to DB.
         mysql.connection.commit()
         cur.close()
+
+        #The below will use flash to flash the message.
         flash('You are now registered','success')
         
         #We need to redirect it to the index.
