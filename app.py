@@ -218,6 +218,57 @@ def add_article():
 
     return render_template('add_article.html',form=form)
 
+
+@app.route('/edit_article/<string:id>',methods=['GET','POST'])
+@is_logged_in
+def edit_article(id):
+
+    # Create a cursor...
+    cursor = mysql.connection.cursor()
+
+    #Get the user by the id.
+    result = cursor.execute("SELECT * FROM articles WHERE id=%s",[id])
+    article = cursor.fetchone()
+    #Get Form.
+    form = ArticleForm(request.form)
+
+    form.title.data = article['title']
+    form.body.data = article['body']
+
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+
+        #Create the cursor to insert the data.
+        cursor = mysql.connection.cursor()
+        cursor.execute("UPDATE articles SET title=%s,body=%s WHERE id=%s",(title,body,id))
+
+
+        #Now, we need to commit this to the database.
+        mysql.connection.commit()
+        #Now, we will close the connection.
+        cursor.close()
+        flash('Article Updated','success')
+
+        #We are going to redirect.
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_article.html',form=form)
+
+
+#Delete article.
+@app.route('/delete_article/<string:id>',methods=['POST'])
+@is_logged_in
+def delete_article(id):
+    #Create the cursor.
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM articles WHERE id=%s",[id])
+    mysql.connection.commit()
+
+    cursor.close()
+    flash('Article Deleted','success')
+    return redirect(url_for('dashboard'))
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
     app.run(debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
