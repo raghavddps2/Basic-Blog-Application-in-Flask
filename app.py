@@ -256,8 +256,19 @@ def edit_article(id):
     return render_template('edit_article.html',form=form)
 
 
+#Delete article.
+@app.route('/delete_article/<string:id>',methods=['POST'])
+@is_logged_in
+def delete_article(id):
+    #Create the cursor.
 
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM articles WHERE id=%s",[id])
+    mysql.connection.commit()
 
+    cursor.close()
+    flash('Article Deleted','success')
+    return redirect(url_for('dashboard'))
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
     app.run(debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
