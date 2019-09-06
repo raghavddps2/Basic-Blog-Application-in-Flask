@@ -1,6 +1,6 @@
 from flask import Flask, flash,redirect,url_for,session,logging,request
 from flask import render_template
-from data import Articles
+# from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form,StringField,TextAreaField,PasswordField,validators
 from passlib.hash import sha256_crypt
@@ -19,7 +19,7 @@ mysql =  MySQL(app)
 #We set the default cursor class to dictionary, helps us set connection and execute queries.
 
 
-art = Articles()
+# art = Articles()
 
 #The below one actually defines the route to which we gonna go.
 @app.route('/')
@@ -50,14 +50,15 @@ def articles():
 
     cursor.close()
 #Single article.
-@app.route('/article/<string:id>/')
-def article(id):
+@app.route('/article1/<string:id>/')
+def article1(id):
     
     cursor = mysql.connection.cursor()
     
     #Get the articles.
     result = cursor.execute("SELECT * FROM articles WHERE id = %s",[id])
     article = cursor.fetchone()
+    # print(article['title'])
     return render_template('article.html',article=article)
     cursor.close()
 
@@ -269,6 +270,7 @@ def delete_article(id):
     cursor.close()
     flash('Article Deleted','success')
     return redirect(url_for('dashboard'))
+    
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
     app.run(debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
