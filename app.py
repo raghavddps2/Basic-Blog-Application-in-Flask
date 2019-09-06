@@ -35,12 +35,31 @@ def about():
 
 @app.route('/articles')
 def articles():
-    return render_template('articles.html',articles=art)
+        #create cursor.
+    cursor = mysql.connection.cursor()
+    
+    #Get the articles.
+    result = cursor.execute("SELECT * FROM articles")
+    articles = cursor.fetchall()
 
+    if result > 0:
+        return render_template('articles.html',articles=articles)
+    else:
+        msg = "No articles found"
+        return render_template('articles.html',msg=msg)
+
+    cursor.close()
 #Single article.
 @app.route('/article/<string:id>/')
 def article(id):
-    return render_template('articles.html',id=id)
+    
+    cursor = mysql.connection.cursor()
+    
+    #Get the articles.
+    result = cursor.execute("SELECT * FROM articles WHERE id = %s",[id])
+    article = cursor.fetchone()
+    return render_template('article.html',article=article)
+    cursor.close()
 
 
 #This one basically sets up all the params required for the form.
@@ -140,6 +159,7 @@ def is_logged_in(f):
     return wrap
 #Logout.
 @app.route('/logout')
+@is_logged_in
 def logout():
     session.clear() #We just have to clear the session.
     flash('You are now logged out','success')
@@ -150,7 +170,53 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
+
+    #create cursor.
+    cursor = mysql.connection.cursor()
+    
+    #Get the articles.
+    result = cursor.execute("SELECT * FROM articles")
+    articles = cursor.fetchall()
+
+    if result > 0:
+        return render_template('dashboard.html',articles=articles)
+    else:
+        msg = "No articles found"
+        return render_template('dashboard.html',msg=msg)
+
+    cursor.close()
+
     return render_template('dashboard.html')
+
+
+class ArticleForm(Form):
+    title = StringField('Title',[validators.length(min=1,max=50)])
+    body = TextAreaField('Body',[validators.length(min=30)])
+
+#Add artcile
+@app.route('/add_article',methods=['GET','POST'])
+@is_logged_in
+def add_article():
+    form  = ArticleForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+
+        #Create the cursor to insert the data.
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO articles(title,body,author) VALUES(%s,%s,%s)",(title,body,session['username']))
+
+
+        #Now, we need to commit this to the database.
+        mysql.connection.commit()
+        #Now, we will close the connection.
+        cursor.close()
+        flash('Article Created','success')
+
+        #We are going to redirect.
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_article.html',form=form)
 
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
