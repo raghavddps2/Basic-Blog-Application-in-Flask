@@ -2,7 +2,13 @@
 
 {% block body %}
     <div class="jumbotron text-center">
-        <h1>Welcome to flask app</h1>
-        <p class="lead">This application is built on python flask framework.</p>
+        <h1>Welcome to Awesome app</h1>
+        <p class="lead">The purpose of this app is to basically help developers use this as the boiler plate if they are creating any blog app
+            with any added functionality
+        </p>
+        {% if session.logged_in == NULL %}
+            <a href="/register" class="btn btn-primary">Register</a>
+            <a href="/login" class="btn btn-success">Login</a>
+        {% endif %}
     </div>
 {% endblock %}
