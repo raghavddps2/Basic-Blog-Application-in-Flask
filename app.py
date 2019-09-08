@@ -123,7 +123,7 @@ def login():
             #Getting the stored hash.
             data = cur.fetchone() #This will get the first one.
             password = data['password'] #This will give us the password.
-
+            country =  data['country']
             #Compare the passwords.
             #This is to verify
             if sha256_crypt.verify(password_candidate,password):
@@ -136,6 +136,7 @@ def login():
                 #We will start the session
                 session['logged_in'] = True
                 session['username'] = username
+                session['country'] = country
                 flash('You are now logged in','success')
                 return redirect(url_for('dashboard'))
 
