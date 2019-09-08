@@ -9,20 +9,21 @@ SET NAMES utf8mb4;
 
 DROP TABLE IF EXISTS `articles`;
 CREATE TABLE `articles` (
-`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `author` varchar(100) NOT NULL,
   `title` varchar(100) NOT NULL,
   `body` text NOT NULL,
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `username` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL
+  `password` varchar(100) NOT NULL,
+  `country` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- 2019-09-08 12:05:12
+-- 2019-09-08 13:32:56

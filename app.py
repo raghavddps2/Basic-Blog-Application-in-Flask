@@ -68,6 +68,7 @@ class RegisterForm(Form):
     name = StringField('Name',[validators.length(min=1,max=50)])
     username = StringField('username',[validators.length(min=4,max=25)])
     email = StringField('email',[validators.length(min=6,max=50)])
+    country = StringField('country', [validators.length(min=2, max=50)])
     password = PasswordField('password',[
         validators.DataRequired(),
         validators.EqualTo('confirm',message='Passwords do not match')
@@ -84,13 +85,14 @@ def register():
         name = form.name.data
         email = form.email.data
         username = form.username.data
+        country = form.country.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
 
         #we will set up the cursor.
         cur = mysql.connection.cursor()
         #following to execute the query.
-        cur.execute("INSERT INTO users(name,email,username,password) VALUES(%s,%s,%s,%s)", (name,email,username,password))
+        cur.execute("INSERT INTO users(name,email,username,country, password) VALUES(%s,%s,%s,%s,%s)", (name,email,username,country, password))
 
         #Following will commit to DB.
         mysql.connection.commit()
