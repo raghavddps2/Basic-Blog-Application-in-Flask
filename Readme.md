@@ -1,4 +1,6 @@
 # This is a classic blog application
+![Registration](./static/img/Registration.png)
+![Home page](./static/img/HomePage.png)
 
 ## To use docker containers
 
@@ -14,3 +16,4 @@
 - Run `docker-compose down` to stop and remove  containers, networks, volumes, and images created
 - To connect to the application, use url http://0.0.0.0:5000/
 - To connect to adminer, use url http://localhost:8080/ and view/export the database
+![Adminer Export](./static/img/adminer.png)
