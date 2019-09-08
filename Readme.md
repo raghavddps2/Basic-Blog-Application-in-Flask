@@ -1,6 +1,6 @@
-#This is a classic blog application
+# This is a classic blog application
 
-##To use docker containers
+## To use docker containers
 
 - Install [docker-ce](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - Install [docker-compose](https://docs.docker.com/compose/install/)
