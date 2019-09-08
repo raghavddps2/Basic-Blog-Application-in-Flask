@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql
+#    hostname: mysqlserver
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: myflaskapp
+    # https://github.com/passbolt/passbolt_docker/issues/103
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    volumes:
+#      - ./data:/var/lib/mysql
+       - ./sqldump.sql:/docker-entrypoint-initdb.d/sqldump.sql # https://gist.github.com/onjin/2dd3cc52ef79069de1faa2dfd456c945
+
+    ports:
+      - "3306:3306"
+  web:
+    build: .
+    command: python app.py
+    volumes:
+      - .:/code
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

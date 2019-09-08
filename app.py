@@ -9,9 +9,9 @@ from functools import wraps
 app = Flask(__name__)
 
 #Config MySQL;
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = 'db'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'example'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -273,4 +273,4 @@ def delete_article(id):
     
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
-    app.run(debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
+    app.run(host="0.0.0.0", debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
