@@ -1,0 +1,4 @@
+flask
+passlib
+wtforms
+Flask-MySQLdb

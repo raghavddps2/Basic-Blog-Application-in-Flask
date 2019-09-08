@@ -9,9 +9,9 @@ from functools import wraps
 app = Flask(__name__)
 
 #Config MySQL;
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = 'db'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'example'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -68,6 +68,7 @@ class RegisterForm(Form):
     name = StringField('Name',[validators.length(min=1,max=50)])
     username = StringField('username',[validators.length(min=4,max=25)])
     email = StringField('email',[validators.length(min=6,max=50)])
+    country = StringField('country', [validators.length(min=2, max=50)])
     password = PasswordField('password',[
         validators.DataRequired(),
         validators.EqualTo('confirm',message='Passwords do not match')
@@ -84,13 +85,14 @@ def register():
         name = form.name.data
         email = form.email.data
         username = form.username.data
+        country = form.country.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
 
         #we will set up the cursor.
         cur = mysql.connection.cursor()
         #following to execute the query.
-        cur.execute("INSERT INTO users(name,email,username,password) VALUES(%s,%s,%s,%s)", (name,email,username,password))
+        cur.execute("INSERT INTO users(name,email,username,country, password) VALUES(%s,%s,%s,%s,%s)", (name,email,username,country, password))
 
         #Following will commit to DB.
         mysql.connection.commit()
@@ -121,7 +123,7 @@ def login():
             #Getting the stored hash.
             data = cur.fetchone() #This will get the first one.
             password = data['password'] #This will give us the password.
-
+            country =  data['country']
             #Compare the passwords.
             #This is to verify
             if sha256_crypt.verify(password_candidate,password):
@@ -134,6 +136,7 @@ def login():
                 #We will start the session
                 session['logged_in'] = True
                 session['username'] = username
+                session['country'] = country
                 flash('You are now logged in','success')
                 return redirect(url_for('dashboard'))
 
@@ -273,4 +276,4 @@ def delete_article(id):
     
 if __name__ == '__main__':
     app.secret_key = 'secret_123'
-    app.run(debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
+    app.run(host="0.0.0.0", debug=True) #Setting debug as true, basically, we don't have to restsrat the server.
